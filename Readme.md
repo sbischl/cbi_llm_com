@@ -1,9 +1,13 @@
 # Overview
-This repository contains replication code for "_How Central Bank Independence Shapes Monetary Policy Communication: A Large Language Model Application_".
+This repository contains replication code for [*"How Central Bank Independence Shapes Monetary Policy Communication: A Large Language Model Application"*](https://www.sciencedirect.com/science/article/abs/pii/S017626802500028X).
+
 It includes code to:
 - Calculate yearly indices of dominance and coordination based on sentence-level classifications using the Gemini LLM
 - Merge the aggregated speeches dataset with other datasets as described in the paper
 - Run the empirical analysis and produce tables and figures of both the appendix and the main text
+
+# Docker container
+To prevent "It runs on my machine but not on your machine" kind of problems, we provide a [Docker](https://hub.docker.com/r/sbischl/cbi_llm_com) container that contains all the necessary packages,  codes and files to replicate all graphs and figures. See the [Readme](https://hub.docker.com/r/sbischl/cbi_llm_com) on Docker Hub for more instructions.
 
 # Repository structure
 The repository is structured as follows:
@@ -41,7 +45,7 @@ Our code can be grouped into 3 parts:
 All three steps can be run independently. We provide the outputs of each step in `data/processed/`. To replicate results and work with the data from the paper, we strongly recommend to start with step 2 or 3, as running the entire Gemini process is impractical and complicated to setup (see details below). To quickly produce the tables and figures, run `run_graphs_and_tables.R`, which will procude all tables and figures covered by the replication code except for Figure A14 and Table A8, which are in self-contained python codes `codes/figures/figure_a14.py` and `codes/tables/table_a8.py` respectively.
 
 ## LLM fine-tuning, metadata extraction, and classification
-- The first step is the speeches data preprocessing. This is done in `llm/speech_preprocessing.py`. This script starts of with the [BIS speeches dataset](https://www.bis.org/cbspeeches/download.htm), merges manual fixes of some speech metadata, cleans the speech text using extensive regex-based preprocessing to remove metadata, footnotes, and non-sentence content. It tokenizes the cleaned text into individual sentences, filters for meaningful sentences based on length and character composition. Since the speeches file is too large for Github the most recent version of the speeches can either be downloaded from the BIS website or our version is taken from OSF mirror of the replication files ([Link](https://osf.io/gpk7r/files/osfstorage/67eab6793d01252c338b7fd0))
+- The first step is the speeches data preprocessing. This is done in `llm/speech_preprocessing.py`. This script starts of with the [BIS speeches dataset](https://www.bis.org/cbspeeches/download.htm), merges manual fixes of some speech metadata, cleans the speech text using extensive regex-based preprocessing to remove metadata, footnotes, and non-sentence content. It tokenizes the cleaned text into individual sentences, filters for meaningful sentences based on length and character composition.
 - Next, we extract structured metadata such as speaker name, position, central bank, venue, and audience from the description strings contained in the BIS speeches dataset. See `llm/metadata_extraction.py`.
 - Logically next, follows the fine-tunig of the Gemini model and finally the classification of the entire dataset using the Gemini LLM. The code for this is in `llm/gemini_fine_tuning.py`. For details on the exact procedure, see the Appendix of the paper.
 
